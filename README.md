@@ -159,6 +159,15 @@ perf record --event cycles --no-inherit --call-graph lbr -- build/bench
 perf report
 ```
 
+## Contributing
+
+This code uses
+[Drew DeVault's C Style Guide](https://git.sr.ht/~sircmpwn/cstyle).
+
+Send patches to
+[~krystianch/public-inbox@lists.sr.ht](mailto:~krystianch/public-inbox@lists.sr.ht).
+([help, I only know pull requests](https://git-send-email.io/))
+
 ## Papers
 
 The utilization of spherical camera in simulation for service robotics
