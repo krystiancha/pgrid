@@ -6,6 +6,9 @@ It was designed with photorealistic environment simulation for service robotics
 in mind.
 It can be thought of as a virtual camera that can be moved and rotated.
 
+Check out
+[this blog post](https://krystianch.com/taking-404-spherical-photos-in-2-hours/).
+
 ![Screenshots](https://files.krystianch.com/pgrid-screenshots.jpg)
 
 ## Requirements
