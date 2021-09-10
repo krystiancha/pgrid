@@ -26,7 +26,7 @@ main(void)
 	pthread_t threads[threads_ln];
 
 	pgrid_grid_init(&grid, cache_ln);
-	pgrid_grid_load(&grid, input_path, strlen(input_path));
+	assert(pgrid_grid_load(&grid, input_path, strlen(input_path)));
 	pgrid_threads_init(&grid, threads, threads_ln);
 
 	assert(glfwInit());

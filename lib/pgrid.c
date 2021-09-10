@@ -524,7 +524,7 @@ jpeg_data_destroy(unsigned char *data)
 	tjFree(data);
 }
 
-void
+bool
 pgrid_point_data_init(struct pgrid_point *point)
 {
 	/* Make sure path is correctly null terminated */
@@ -533,10 +533,15 @@ pgrid_point_data_init(struct pgrid_point *point)
 	path[point->path_sz] = '\0';
 
 	FILE *file = fopen(path, "rb");
-	assert(file);
+	if (!file) {
+		pgrid_log(PGRID_ERROR, "Opening image \"%s\" failed", path);
+		return false;
+	}
 	point->data = jpeg_data_create(file, &point->width, &point->height);
 	assert(point->data);
 	assert(!fclose(file));
+
+	return true;
 }
 
 void
@@ -640,7 +645,7 @@ pgrid_grid_finish(struct pgrid_grid *grid)
 	pthread_cond_destroy(&grid->cond);
 }
 
-void
+bool
 pgrid_grid_load(struct pgrid_grid *grid, const char *path, size_t path_sz)
 {
 	/* Make sure path is correctly null terminated */
@@ -651,7 +656,11 @@ pgrid_grid_load(struct pgrid_grid *grid, const char *path, size_t path_sz)
 	assert(!grid->points);
 
 	FILE *file = fopen(path, "r");
-	assert(file);
+	if (!file) {
+		pgrid_log(PGRID_ERROR, "Opening the grid file \"%s\" failed",
+			path);
+		return false;
+	}
 
 	char *line = NULL;
 	size_t line_sz = 0;
@@ -687,8 +696,9 @@ pgrid_grid_load(struct pgrid_grid *grid, const char *path, size_t path_sz)
 	}
 
 	free(line);
-
 	assert(!fclose(file));
+
+	return true;
 }
 
 void
@@ -705,7 +715,7 @@ pgrid_grid_single(struct pgrid_grid *grid, const char *path, size_t path_sz)
 	memcpy(grid->points[0].path, path, path_sz);
 	grid->points[0].path[path_sz] = '\0';
 
-	pgrid_point_data_init(grid->points + 0);
+	assert(pgrid_point_data_init(grid->points + 0));
 }
 
 void
@@ -766,7 +776,7 @@ static void *thread(void *arg)
 			struct pgrid_point *p = grid->points + i;
 			if (!pthread_mutex_trylock(&p->mutex)) {
 				if (p->rank < limit && !p->data) {
-					pgrid_point_data_init(p);
+					assert(pgrid_point_data_init(p));
 					pthread_cond_broadcast(&p->cond);
 					++grid->metrics.decoded;
 					changed = true;

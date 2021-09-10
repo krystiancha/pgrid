@@ -162,7 +162,12 @@ main(int argc, char *argv[])
 	if (single_mode) {
 		pgrid_grid_single(&grid, input_path, strlen(input_path));
 	} else {
-		pgrid_grid_load(&grid, input_path, strlen(input_path));
+		if (!pgrid_grid_load(&grid, input_path, strlen(input_path))) {
+			fprintf(stderr, "Could not open grid file. Ensure it "
+				"exists.");
+			exit(EXIT_FAILURE);
+		}
+
 		pgrid_threads_init(&grid, threads, threads_ln);
 	}
 

@@ -66,7 +66,7 @@ struct pgrid {
 
 void pgrid_grid_init(struct pgrid_grid *grid, size_t raw_points);
 
-void pgrid_grid_load(struct pgrid_grid *grid, const char *path, size_t path_sz);
+bool pgrid_grid_load(struct pgrid_grid *grid, const char *path, size_t path_sz);
 
 void pgrid_grid_single(struct pgrid_grid *grid, const char *path,
 	size_t path_sz);
